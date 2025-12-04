@@ -1,5 +1,6 @@
 # cnloc (China Location)
 
+Last update: 2025-12-04
 
 `cnloc` 是一个专注于中国地址解析的Python库，核心功能如下：  
 - 解析地址文本，提取省份、城市、区县的**全称**、**行政区划代码**及 **ID** 
