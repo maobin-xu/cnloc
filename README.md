@@ -1,20 +1,20 @@
 # cnloc (China Location)
 
-Last updated on 2025-12-04
+Last updated on 2025-12-05
 
 `cnloc` 是一个专注于中国地址解析的Python库，核心功能如下：  
 - 解析地址文本，提取省份、城市、区县的**全称**、**行政区划代码**及 **ID** 
 - 解析原则：兼顾**全面性**与**准确性**，尽可能匹配完整地址信息，确保已有的匹配结果100%准确，模糊场景下不强行匹配   
 - 支持按指定年份匹配（覆盖1980-2024年历史行政区划）  
 - 提供两种匹配模式（左到右匹配/低到高匹配）  
-
+- 可通过Stata同名命令[cnloc](https://github.com/maobin-xu/cnloc-stata)与Stata集成，在Stata中批量处理地址数据
 
 `cnloc` is a Python package dedicated to Chinese address parsing, with core features including:  
 - Parses address text to extract **full name** (_name), **short name** (_short), **administrative division code** (adcode), and **ID** for provinces, cities, and counties  
 - Parsing principle: Balance **comprehensiveness** and **accuracy**; match as much complete address information as possible while ensuring 100% accuracy of results; no forced matching for ambiguous scenarios  
 - Supports year-specific matching (covering historical administrative divisions from 1980 to 2024)  
 - Offers two matching modes (left-to-right matching / low-to-high matching)
-
+- Enables batch processing of address data in Stata using the same command name [cnloc](https://github.com/maobin-xu/cnloc-stata)
 
 
 ## 使用说明 | Usage  
@@ -49,14 +49,14 @@ Note: County-level IDs `county_id` are currently **unreliable**! Province- and c
 ```python
 import cnloc
 address_data = ['江苏省昆山市千灯镇玉溪西路', '广东省深圳市南山区深南大道']
-result = cnloc.getlocation(address_data, year=2023, mode=1)
+result = cnloc.getlocation(address_data, year=2023, mode=1, drop=['adcode','id'], prefix='a_', suffix='_b')
 result
 ```
 
-| address                   | year | province_name | city_name | county_name | province_adcode | city_adcode | county_adcode | province_id | city_id | county_id |
-|---------------------------|------|---------------|-----------|-------------|-----------------|-------------|---------------|-------------|---------|-----------|
-| 江苏省昆山市千灯镇玉溪西路 | 2023 | 江苏省        | 苏州市    | 昆山市      | 320000          | 320500      | 320583        | 320000      | 320500  | 320583    |
-| 广东省深圳市南山区深南大道 | 2023 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
+| address                  | a_year_b | a_province_name_b | a_city_name_b | a_county_name_b | 
+|--------------------------|------|---------------|-----------|-------------| 
+| 江苏省昆山市千灯镇玉溪西路 | 2023 | 江苏省        | 苏州市    | 昆山市      |
+| 广东省深圳市南山区深南大道 | 2023 | 广东省        | 深圳市    | 南山区      |
 
 
 参数：
@@ -67,8 +67,15 @@ result
 - `mode`：匹配模式（可选）。默认模式1。
     - 1：左到右匹配（高到低匹配，省份到区县），遵循字符串顺序
     - 2：低到高匹配（区县到省份），不推荐日常使用
+- `drop`：删除指定列（可选）。默认None。
+    - 'address'：删除原始地址列
+    - 'year'：删除年份列
+    - 'name'：删除省份、城市、区县的全称列
+    - 'adcode'：删除省份、城市、区县的行政区划代码列
+    - 'id'：删除省份、城市、区县的ID列
+- `prefix`：输出列名前缀（可选）。默认空。
+- `suffix`：输出列名后缀（可选）。默认空。
 - `max_workers`：最大线程数（可选）。默认4线程。
- 
 
 
 Args:
@@ -79,6 +86,14 @@ Args:
 - `mode`: Matching mode. Default is 1.
     - 1: left to right (high to low, province to county), following string order
     - 2: low to high (county to province), ignoring string order; not recommended for basic use
+- `drop`: Column list to drop in the final output. Default is None.
+    - 'address': drop the raw address column
+    - 'year': drop the year column
+    - 'name': drop province_name, city_name, and county_name columns
+    - 'adcode': drop province_adcode, city_adcode, and county_adcode columns
+    - 'id': drop province_id, city_id, and county_id columns
+- `prefix`: Prefix to add to column names.
+- `suffix`: Suffix to add to column names.
 - `max_workers`: Maximum number of worker threads. Default is 4.
 
 
