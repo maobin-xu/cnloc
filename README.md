@@ -55,9 +55,28 @@ result
 | 江苏省昆山市千灯镇玉溪西路 | 2023 | 江苏省        | 苏州市    | 昆山市      | 320000          | 320500      | 320583        | 320000      | 320500  | 320583    |
 | 广东省深圳市南山区深南大道 | 2023 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
 
-具体参数介绍详见包文档。
 
-Detailed parameter descriptions are available in the package documentation.
+参数：
+- `input_data`：输入地址（必填）。支持str、list或pd.Series。
+- `year`：匹配年份（可选）。默认加载2024年数据。有效范围为1980至2024年，超出范围的年份将被裁剪为默认值2024。
+    - int：对所有地址使用相同年份
+    - int列表或pd.Series：对每个地址使用对应的年份
+- `mode`：匹配模式（可选）。默认模式1。
+    - 1：左到右匹配（高到低匹配，省份到区县），遵循字符串顺序
+    - 2：低到高匹配（区县到省份），不推荐日常使用
+- `max_workers`：最大线程数（可选）。默认4线程。
+ 
+
+
+Args:
+- `input_data`: Input addresses (required). Support str, list, or pd.Series.
+- `year`: Year for matching. Default is to load 2024 data. Valid range is from 1980 to 2024, and invalid years will be clipped to the default year 2024.
+    - int: use the same year for all addresses
+    - list of int, or pd.Series: use the corresponding year for each address
+- `mode`: Matching mode. Default is 1.
+    - 1: left to right (high to low, province to county), following string order
+    - 2: low to high (county to province), ignoring string order; not recommended for basic use
+- `max_workers`: Maximum number of worker threads. Default is 4.
 
 
 未来规划：
