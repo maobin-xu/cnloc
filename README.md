@@ -18,6 +18,12 @@
 
 ## 使用说明 | Usage  
 
+下载安装 Installation
+```bash
+pip install cnloc
+```
+
+
 一个简单的例子 A simple example:
 ```python
 import cnloc
