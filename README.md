@@ -101,7 +101,7 @@ Python中主流的中文地址解析库为[cpca](https://github.com/DQinYuan/chi
 - 模糊场景处理不当：多结果匹配时强行返回单一结果，存在准确性风险
 - 数据维度不足：仅包含全称与行政区划代码，缺少ID等关键字段。ID在经济学研究中至关重要，可追溯城市历史变迁，避免因名称/代码变更导致的数据断裂  
 
-鉴于上述局限性，本项目参考`cpca`的逻辑，开发了cnloc库以满足更精准、全面的地址解析需求。  
+鉴于上述局限性，本项目参考`cpca`的逻辑，开发了`cnloc`库以满足更精准、全面的地址解析需求。  
 
 
 The mainstream Chinese address parsing library in Python is [cpca](https://github.com/DQinYuan/chinese_province_city_area_mapper), but it has the following limitations in practical use:  
