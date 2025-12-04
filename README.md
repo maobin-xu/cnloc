@@ -1,6 +1,6 @@
 # cnloc (China Location)
 
-Last update: 2025-12-04
+Last updated on 2025-12-04
 
 `cnloc` 是一个专注于中国地址解析的Python库，核心功能如下：  
 - 解析地址文本，提取省份、城市、区县的**全称**、**行政区划代码**及 **ID** 
@@ -53,7 +53,7 @@ result
 | address                   | year | province_name | city_name | county_name | province_adcode | city_adcode | county_adcode | province_id | city_id | county_id |
 |---------------------------|------|---------------|-----------|-------------|-----------------|-------------|---------------|-------------|---------|-----------|
 | 江苏省昆山市千灯镇玉溪西路 | 2023 | 江苏省        | 苏州市    | 昆山市      | 320000          | 320500      | 320583        | 320000      | 320500  | 320583    |
-| 广东省深圳市南山区深南大道 | 2024 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
+| 广东省深圳市南山区深南大道 | 2023 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
 
 具体参数介绍详见包文档。
 
@@ -118,56 +118,45 @@ import cpca
 cpca.transform(address_data) 
 ```
 
-
-<style>
-.t{width:100%;border-collapse:collapse;}
-.t th,.t td{border:1px solid #ccc;padding:6px;text-align:center;white-space:nowrap;font-size:11px;}
-.t th{background:#f5f5f5;font-weight:bold;}
-</style>
-<table class="t">
-<thead>
-<tr> <th rowspan="2">Address</th> <th colspan="3">cnloc</th> <th colspan="3">cpca</th> </tr>
-<tr><th>Province</th><th>City</th><th>County</th><th>Province</th><th>City</th><th>County</th></tr></thead>
-<tbody>
-<tr><td>朝阳</td><td></td><td></td><td></td><td><span style="color:red;font-weight:bold">辽宁省</span></td><td><span style="color:red;font-weight:bold">朝阳市</span></td><td></td></tr>
-<tr><td>朝阳市</td><td>辽宁省</td><td>朝阳市</td><td></td><td>辽宁省</td><td>朝阳市</td><td></td></tr>
-<tr><td>朝阳县</td><td>辽宁省</td><td>朝阳市</td><td>朝阳县</td><td>辽宁省</td><td>朝阳市</td><td>朝阳县</td></tr>
-<tr><td>朝阳区</td><td></td><td></td><td></td><td><span style="color:red;font-weight:bold">吉林省</span></td><td><span style="color:red;font-weight:bold">长春市</span></td><td><span style="color:red;font-weight:bold">朝阳区</span></td></tr>
-<tr><td>朝阳市朝阳</td><td>辽宁省</td><td>朝阳市</td><td>朝阳县</td><td>辽宁省</td><td>朝阳市</td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>朝阳朝阳</td><td>辽宁省</td><td>朝阳市</td><td>朝阳县</td><td>辽宁省</td><td>朝阳市</td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>北京朝阳</td><td>北京市</td><td>市辖区</td><td>朝阳区</td><td>北京市</td><td><span style="color:red;font-weight:bold">Missing</span></td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>辽宁朝阳</td><td>辽宁省</td><td>朝阳市</td><td></td><td>辽宁省</td><td>朝阳市</td><td></td></tr>
-<tr><td>荆州</td><td>湖北省</td><td>荆州市</td><td></td><td>湖北省</td><td>荆州市</td><td></td></tr>
-<tr><td>荆州市</td><td>湖北省</td><td>荆州市</td><td></td><td>湖北省</td><td>荆州市</td><td></td></tr>
-<tr><td>荆州区</td><td>湖北省</td><td>荆州市</td><td>荆州区</td><td>湖北省</td><td>荆州市</td><td>荆州区</td></tr>
-<tr><td>荆州市荆州区</td><td>湖北省</td><td>荆州市</td><td>荆州区</td><td>湖北省</td><td>荆州市</td><td>荆州区</td></tr>
-<tr><td>荆州市荆州</td><td>湖北省</td><td>荆州市</td><td>荆州区</td><td>湖北省</td><td>荆州市</td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>荆州荆州</td><td>湖北省</td><td>荆州市</td><td>荆州区</td><td>湖北省</td><td>荆州市</td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>荆州荆州区</td><td>湖北省</td><td>荆州市</td><td>荆州区</td><td>湖北省</td><td>荆州市</td><td>荆州区</td></tr>
-<tr><td>湖北荆州</td><td>湖北省</td><td>荆州市</td><td></td><td>湖北省</td><td>荆州市</td><td></td></tr>
-<tr><td>湖北荆州沙市</td><td>湖北省</td><td>荆州市</td><td>沙市区</td><td>湖北省</td><td>荆州市</td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>鼓楼区</td><td></td><td></td><td></td><td><span style="color:red;font-weight:bold">河南省</span></td><td><span style="color:red;font-weight:bold">开封市</span></td><td><span style="color:red;font-weight:bold">鼓楼区</span></td></tr>
-<tr><td>江苏鼓楼区</td><td>江苏省</td><td></td><td></td><td>江苏省</td><td><span style="color:red;font-weight:bold">南京市</span></td><td><span style="color:red;font-weight:bold">鼓楼区</span></td></tr>
-<tr><td>南京鼓楼区</td><td>江苏省</td><td>南京市</td><td>鼓楼区</td><td>江苏省</td><td>南京市</td><td>鼓楼区</td></tr>
-<tr><td>江苏徐州鼓楼区</td><td>江苏省</td><td>徐州市</td><td>鼓楼区</td><td>江苏省</td><td>徐州市</td><td>鼓楼区</td></tr>
-<tr><td>南山</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>广东省深圳市南山区深南大道</td><td>广东省</td><td>深圳市</td><td>南山区</td><td>广东省</td><td>深圳市</td><td>南山区</td></tr>
-<tr><td>深圳南山</td><td>广东省</td><td>深圳市</td><td>南山区</td><td>广东省</td><td>深圳市</td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>广东南山</td><td>广东省</td><td>深圳市</td><td>南山区</td><td>广东省</td><td><span style="color:red;font-weight:bold">Missing</span></td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>深圳市华侨城东部工业区</td><td>广东省</td><td>深圳市</td><td></td><td>广东省</td><td>深圳市</td><td></td></tr>
-<tr><td>深圳东门南路2006号宝丰大厦五楼</td><td>广东省</td><td>深圳市</td><td></td><td>广东省</td><td>深圳市</td><td></td></tr>
-<tr><td>中国深圳市深南大道</td><td>广东省</td><td>深圳市</td><td></td><td>广东省</td><td>深圳市</td><td></td></tr>
-<tr><td>海淀</td><td>北京市</td><td>市辖区</td><td>海淀区</td><td><span style="color:red;font-weight:bold">Missing</span></td><td><span style="color:red;font-weight:bold">Missing</span></td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>北京市海淀区中关村大街1号</td><td>北京市</td><td>市辖区</td><td>海淀区</td><td>北京市</td><td>市辖区</td><td>海淀区</td></tr>
-<tr><td>海淀中关村大街1号</td><td>北京市</td><td>市辖区</td><td>海淀区</td><td><span style="color:red;font-weight:bold">Missing</span></td><td><span style="color:red;font-weight:bold">Missing</span></td><td><span style="color:red;font-weight:bold">Missing</span></td></tr>
-<tr><td>中关村大街1号</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>马鞍山市经济技术开发区红旗南路51号</td><td>安徽省</td><td>马鞍山市</td><td></td><td>安徽省</td><td>马鞍山市</td><td></td></tr>
-<tr><td>银川市西夏区北京西路630号</td><td>宁夏回族自治区</td><td>银川市</td><td>西夏区</td><td>宁夏回族自治区</td><td>银川市</td><td>西夏区</td></tr>
-<tr><td>杭州市延安路508号</td><td>浙江省</td><td>杭州市</td><td></td><td>浙江省</td><td>杭州市</td><td></td></tr>
-<tr><td>江苏省昆山市千灯镇玉溪西路168号</td><td>江苏省</td><td>苏州市</td><td>昆山市</td><td>江苏省</td><td>苏州市</td><td>昆山市</td></tr>
-<tr><td>上海市</td><td>上海市</td><td></td><td></td><td>上海市</td><td></td><td></td></tr>
-</tbody>
-</table>
+| Address | cnloc-Province | cnloc-City | cnloc-County | cpca-Province | cpca-City | cpca-County |
+|---------|----------------|------------|--------------|---------------|-----------|-------------|
+| 朝阳 |  |  |  | **辽宁省** | **朝阳市** |  |
+| 朝阳市 | 辽宁省 | 朝阳市 |  | 辽宁省 | 朝阳市 |  |
+| 朝阳县 | 辽宁省 | 朝阳市 | 朝阳县 | 辽宁省 | 朝阳市 | 朝阳县 |
+| 朝阳区 |  |  |  | **吉林省** | **长春市** | **朝阳区** |
+| 朝阳市朝阳 | 辽宁省 | 朝阳市 | 朝阳县 | 辽宁省 | 朝阳市 | **Missing** |
+| 朝阳朝阳 | 辽宁省 | 朝阳市 | 朝阳县 | 辽宁省 | 朝阳市 | **Missing** |
+| 北京朝阳 | 北京市 | 市辖区 | 朝阳区 | 北京市 | **Missing** | **Missing** |
+| 辽宁朝阳 | 辽宁省 | 朝阳市 |  | 辽宁省 | 朝阳市 |  |
+| 荆州 | 湖北省 | 荆州市 |  | 湖北省 | 荆州市 |  |
+| 荆州市 | 湖北省 | 荆州市 |  | 湖北省 | 荆州市 |  |
+| 荆州区 | 湖北省 | 荆州市 | 荆州区 | 湖北省 | 荆州市 | 荆州区 |
+| 荆州市荆州区 | 湖北省 | 荆州市 | 荆州区 | 湖北省 | 荆州市 | 荆州区 |
+| 荆州市荆州 | 湖北省 | 荆州市 | 荆州区 | 湖北省 | 荆州市 | **Missing** |
+| 荆州荆州 | 湖北省 | 荆州市 | 荆州区 | 湖北省 | 荆州市 | **Missing** |
+| 荆州荆州区 | 湖北省 | 荆州市 | 荆州区 | 湖北省 | 荆州市 | 荆州区 |
+| 湖北荆州 | 湖北省 | 荆州市 |  | 湖北省 | 荆州市 |  |
+| 湖北荆州沙市 | 湖北省 | 荆州市 | 沙市区 | 湖北省 | 荆州市 | **Missing** |
+| 鼓楼区 |  |  |  | **河南省** | **开封市** | **鼓楼区** |
+| 江苏鼓楼区 | 江苏省 |  |  | 江苏省 | **南京市** | **鼓楼区** |
+| 南京鼓楼区 | 江苏省 | 南京市 | 鼓楼区 | 江苏省 | 南京市 | 鼓楼区 |
+| 江苏徐州鼓楼区 | 江苏省 | 徐州市 | 鼓楼区 | 江苏省 | 徐州市 | 鼓楼区 |
+| 南山 |  |  |  |  |  |  |
+| 广东省深圳市南山区深南大道 | 广东省 | 深圳市 | 南山区 | 广东省 | 深圳市 | 南山区 |
+| 深圳南山 | 广东省 | 深圳市 | 南山区 | 广东省 | 深圳市 | **Missing** |
+| 广东南山 | 广东省 | 深圳市 | 南山区 | 广东省 | **Missing** | **Missing** |
+| 深圳市华侨城东部工业区 | 广东省 | 深圳市 |  | 广东省 | 深圳市 |  |
+| 深圳东门南路2006号宝丰大厦五楼 | 广东省 | 深圳市 |  | 广东省 | 深圳市 |  |
+| 中国深圳市深南大道 | 广东省 | 深圳市 |  | 广东省 | 深圳市 |  |
+| 海淀 | 北京市 | 市辖区 | 海淀区 | **Missing** | **Missing** | **Missing** |
+| 北京市海淀区中关村大街1号 | 北京市 | 市辖区 | 海淀区 | 北京市 | 市辖区 | 海淀区 |
+| 海淀中关村大街1号 | 北京市 | 市辖区 | 海淀区 | **Missing** | **Missing** | **Missing** |
+| 中关村大街1号 |  |  |  |  |  |  |
+| 马鞍山市经济技术开发区红旗南路51号 | 安徽省 | 马鞍山市 |  | 安徽省 | 马鞍山市 |  |
+| 银川市西夏区北京西路630号 | 宁夏回族自治区 | 银川市 | 西夏区 | 宁夏回族自治区 | 银川市 | 西夏区 |
+| 杭州市延安路508号 | 浙江省 | 杭州市 |  | 浙江省 | 杭州市 |  |
+| 江苏省昆山市千灯镇玉溪西路168号 | 江苏省 | 苏州市 | 昆山市 | 江苏省 | 苏州市 | 昆山市 |
+| 上海市 | 上海市 |  |  | 上海市 |  |  |
 
 
 
@@ -187,14 +176,14 @@ Data Sources:
 | Year     | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 | 1986 | 1987 | 1988 | 1989 | 1990 | 1991 | 1992 | 1993 | 1994 | 1995 | 1996 | 1997 | 1998 | 1999 | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 |
 |----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
 | Official | 318  | 316  | 322  | 322  | 322  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | 340  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
-| My       | <span style="color:red">316</span>  | 316  | <span style="color:red">319</span>  | <span style="color:red">323</span>  | <span style="color:red">323</span>  | 327  | <span style="color:red">324</span>  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | <span style="color:red">334</span>  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
+| My       | **316**  | 316  | **319**  | **323**  | **323**  | 327  | **324**  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | **334**  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
 
 县级行政区划数目对比 Comparison of county-level administrative divisions  
 
 | Year     | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 | 1986 | 1987 | 1988 | 1989 | 1990 | 1991 | 1992 | 1993 | 1994 | 1995 | 1996 | 1997 | 1998 | 1999 | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 |
 |----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
 | Official | 2775 | 2780 | 2797 | 2785 | 2814 | 2826 | 2830 | 2826 | 2831 | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | 2859 | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 |
-| My       | <span style="color:red">2761</span> | <span style="color:red">2772</span> | <span style="color:red">2793</span> | <span style="color:red">2774</span> | <span style="color:red">2813</span> | <span style="color:red">2825</span> | <span style="color:red">2831</span> | 2826 | <span style="color:red">2830</span> | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | <span style="color:red">2858</span> | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 |
+| My       | **2761** | **2772** | **2793** | **2774** | **2813** | **2825** | **2831** | 2826 | **2830** | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | **2858** | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 |
 
 
 ## 参考资料 | References

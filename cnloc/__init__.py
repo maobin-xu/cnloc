@@ -3,7 +3,7 @@ cnloc
 中国行政区划地址解析器
 Address Parser for Chinese Administrative Divisions
 """
-__version__ = "0.1.1"
+__version__ = "0.1.3"
 
 import pandas as pd
 import ahocorasick
