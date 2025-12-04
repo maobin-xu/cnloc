@@ -36,8 +36,11 @@ result
 |-----------------------------|------|---------------|-----------|-------------|-----------------|-------------|---------------|-------------|---------|-----------|
 | 广东省深圳市南山区深南大道 | 2024 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
 
+其中，后缀为`_name`的列是地址的全称，后缀为`_adcode`的列是地址的行政区划代码，后缀为`_id`的列是地址的ID，地址ID追踪一个省市县的唯一标识，而不用考虑改名或改编号。
 
 注意：区县ID `county_id` 目前暂不可靠！省份、城市ID已完成人工核对。 
+
+The `name` column is the full name of the address. The `adcode` column is the administrative division code of the address. The `id` column is the unique identifier for a province, city, or county, which tracks the address level uniquely, regardless of name changes or code updates. 
 
 Note: County-level IDs `county_id` are currently **unreliable**! Province- and city-level IDs have been manually verified.
 
