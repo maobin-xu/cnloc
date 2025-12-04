@@ -37,7 +37,7 @@ result
 | 广东省深圳市南山区深南大道 | 2024 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
 
 
-注意：`county_id`（区县ID）目前暂不可靠！省份、城市ID已完成人工核对。 
+注意：区县ID `county_id` 目前暂不可靠！省份、城市ID已完成人工核对。 
 
 Note: County-level IDs `county_id` are currently **unreliable**! Province- and city-level IDs have been manually verified.
 
