@@ -28,7 +28,7 @@ pip install cnloc
 一个简单的例子 A simple example:
 ```python
 import cnloc
-result = cnloc.parse('广东省深圳市南山区深南大道')
+result = cnloc.getlocation('广东省深圳市南山区深南大道')
 result
 ```
 
