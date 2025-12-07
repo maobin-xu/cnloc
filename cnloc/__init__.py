@@ -3,7 +3,7 @@ cnloc
 中国行政区划地址解析器
 Address Parser for Chinese Administrative Divisions
 """
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 import pandas as pd
 import ahocorasick
@@ -49,7 +49,7 @@ class AddressParser:
 
     def _load_data(self: int) -> None:
         # load data and preprocess by row
-        path = files("cnloc.data").joinpath("location_year_20251001.csv")
+        path = files("cnloc.data").joinpath("location_year_20251201.csv")
         with open(path, 'r', encoding='utf-8', newline='') as f:
             reader = csv.DictReader(f)
             for row in reader:
@@ -507,22 +507,24 @@ def getlocation(input_data: Union[str, List[str], pd.Series],
 
 
 # interface function for Stata
-def parse_address_from_Stata(input_data: str, year: str, drop: str = None, mode: int = 1, prefix: str = '', suffix: str = ''):
+def parse_address_from_Stata(input_data: str, year: str, drop: str = None, mode: int = 1, prefix: str = '', suffix: str = '' , sample: str = None):
     from sfi import Data  # integrated in Stata
     # get data
     try:  # input year as int
         year = int(year)
-        dataraw = Data.get([input_data])
+        dataraw = Data.get([input_data], selectvar=sample)
         dataframe = pd.DataFrame(dataraw, columns=[input_data])
-        dataframe[year] = year
+        dataframe['year'] = year
+        dataframe.rename(columns={input_data: 'input_data'}, inplace=True)
     except ValueError as e:  # input year as variable name
-        dataraw = Data.get([input_data, year])
+        dataraw = Data.get([input_data, year], selectvar=sample)
         dataframe = pd.DataFrame(dataraw, columns=[input_data, year])
+        dataframe.rename(columns={input_data: 'input_data', year: 'year'}, inplace=True)
     # variables to drop, default is to drop address
     drop = drop.split() if drop else None
     drop = (drop + ['address']) if drop else ['address']
     # parse address
-    final_location = getlocation(dataframe[input_data], year=dataframe[year], drop=drop, mode=mode, prefix=prefix, suffix=suffix)
+    final_location = getlocation(dataframe['input_data'], year=dataframe['year'], drop=drop, mode=mode, prefix=prefix, suffix=suffix)
 	# fill missing value
     for each in ["province_name","city_name","county_name","province_adcode","city_adcode","county_adcode", "province_id", "city_id", "county_id"]:
         new_name = prefix+each+suffix
@@ -536,9 +538,11 @@ def parse_address_from_Stata(input_data: str, year: str, drop: str = None, mode:
             Data.addVarDouble(col)
         elif pd.api.types.is_string_dtype(final_location[col]):
             max_length = final_location[col].str.len().max()
+            # if empty matching, set length to 1
+            max_length = max(max_length, 1)
             Data.addVarStr(col, max_length)
     # python dataframe to stata
     for each_variable in final_location.columns:
-        Data.store(each_variable, None,final_location[each_variable],None)
+        Data.store(each_variable, None, final_location[each_variable], selectvar=sample)
 
 

@@ -1,6 +1,6 @@
 # cnloc (China Location)
 
-Last updated on 2025-12-05
+Last updated on 2025-12-07
 
 `cnloc` 是一个专注于中国地址解析的Python库，核心功能如下：  
 - 解析地址文本，提取省份、城市、区县的**全称**、**行政区划代码**及 **ID** 
@@ -38,11 +38,11 @@ result
 
 其中，后缀为`_name`的列是地址的全称，后缀为`_adcode`的列是地址的行政区划代码，后缀为`_id`的列是地址的ID，地址ID追踪一个省市县的唯一标识，而不用考虑改名或改编号。
 
-注意：区县ID `county_id` 目前暂不可靠！省份、城市ID已完成人工核对。 
+注意：区县ID `county_id` 目前暂不可靠！省份、城市ID已完成人工核对，已与文末参考资料中的数据进行对比验证，确认无误。 
 
 The `name` column is the full name of the address. The `adcode` column is the administrative division code of the address. The `id` column is the unique identifier for a province, city, or county, which tracks the address level uniquely, regardless of name changes or code updates. 
 
-Note: County-level IDs `county_id` are currently **unreliable**! Province- and city-level IDs have been manually verified.
+Note: County-level IDs `county_id` are currently **unreliable**! The province- and city-level IDs have undergone manual verification and cross-checking against the data in the references listed at the end, and have been confirmed as accurate.
 
 
 一个更复杂的例子 A more complex example
@@ -204,16 +204,26 @@ cpca.transform(address_data)
 - 官方行政区划数目：来自[中华人民共和国国家统计局年度数据](https://data.stats.gov.cn/easyquery.htm?cn=C01)  
   
 Data Sources:
-- Administrative division codes (1980-2024): Scraped from [Ministry of Civil Affairs of the People's Republic of China](https://www.mca.gov.cn/n156/n186/index.html), with manual corrections for partial official errors
-- Official administrative division counts: Sourced from [National Bureau of Statistics of the People's Republic of China Annual Data](https://data.stats.gov.cn/easyquery.htm?cn=C01)
+- Administrative division codes (1980-2024): Scraped from [Ministry of Civil Affairs of the People's Republic of China (MCA)](https://www.mca.gov.cn/n156/n186/index.html), with manual corrections for partial official errors
+- Official administrative division counts: Sourced from [National Bureau of Statistics of the People's Republic of China (NBS) Annual Data](https://data.stats.gov.cn/easyquery.htm?cn=C01)
 
+
+根据[石艺峰](https://zhuanlan.zhihu.com/p/564774073)以及我自己的观察，民政部披露的逐年行政区划代码中，1982年山西、内蒙古、黑龙江、浙江、福建、江西、河南及四川省，以及1983年湖南省，其内部市级行政区划代码发生过互相调配的现象，无法确认是数据错误还是发生了一些大事（尤其是浙江），因此保留民政部原始代码。
+
+According to [石艺峰](https://zhuanlan.zhihu.com/p/564774073) and my observation, in the annual administrative division codes disclosed by the MCA, there were cases of mutual adjustment of city-level administrative division codes within Shanxi, Nei Mongol, Heilongjiang, Zhejiang, Fujian, Jiangxi, Henan and Sichuan provinces in 1982, and Hunan province in 1983. It is hard to confirm whether this was due to data errors or the occurrence of certain major events, and I use the raw MCA codes.
+  
 
 地级行政区划数目对比 Comparison of city-level administrative divisions  
 
 | Year     | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 | 1986 | 1987 | 1988 | 1989 | 1990 | 1991 | 1992 | 1993 | 1994 | 1995 | 1996 | 1997 | 1998 | 1999 | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 |
 |----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
 | Official | 318  | 316  | 322  | 322  | 322  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | 340  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
-| My       | **316**  | 316  | **319**  | **323**  | **323**  | 327  | **324**  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | **334**  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
+| My       | **316**  | 316  | **319**  | **323**  | **323**  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | **334**  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
+
+1995年地级行政区划数目疑似统计局有问题。
+
+There seems to be a problem with the 1995 number of city-level administrative divisions from the NBS.
+
 
 县级行政区划数目对比 Comparison of county-level administrative divisions  
 
@@ -229,6 +239,10 @@ Data Sources:
 - [Administrative-divisions-of-China](https://github.com/modood/Administrative-divisions-of-China)
 - [china_area](https://github.com/adyliu/china_area)
 - [gbt2260](https://github.com/medz/gbt2260)
+- [tjqh](https://github.com/gumblex/tjqh)
+- [AreaCity-JsSpider-StatsGov](https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov)
+- [shengshixian.com](https://github.com/ruiduobao/shengshixian.com)
+- [province-city-china](https://github.com/uiwjs/province-city-china/)
 - [中华人民共和国行政区划沿革地图集（1949~1999）， 陈潮、陈洪玲主编，中国地图出版社](https://book.douban.com/subject/1139251/)
 - [知乎：行政区划代码历史大全（民政部1980年-2024年+老国标+非官方数据）及一些历史梳理挖掘（2025.05更新）](https://zhuanlan.zhihu.com/p/564774073)
 
