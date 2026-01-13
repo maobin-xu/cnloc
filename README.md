@@ -1,19 +1,19 @@
 # cnloc (China Location)
 
-Last updated on 2025-12-07
+Last updated on 2026-01-13
 
 `cnloc` 是一个专注于中国地址解析的Python库，核心功能如下：  
 - 解析地址文本，提取省份、城市、区县的**全称**、**行政区划代码**及 **ID** 
 - 解析原则：兼顾**全面性**与**准确性**，尽可能匹配完整地址信息，确保已有的匹配结果100%准确，模糊场景下不强行匹配   
 - 支持按指定年份匹配（覆盖1980-2024年历史行政区划）  
-- 提供两种匹配模式（左到右匹配/低到高匹配）  
+- 提供两种匹配模式（左到右匹配/低到高匹配），可选区县简称匹配
 - 可通过Stata同名命令[cnloc](https://github.com/maobin-xu/cnloc-stata)与Stata集成，在Stata中批量处理地址数据
 
 `cnloc` is a Python package dedicated to Chinese address parsing, with core features including:  
 - Parses address text to extract **full name** (_name), **short name** (_short), **administrative division code** (adcode), and **ID** for provinces, cities, and counties  
 - Parsing principle: Balance **comprehensiveness** and **accuracy**; match as much complete address information as possible while ensuring 100% accuracy of results; no forced matching for ambiguous scenarios  
 - Supports year-specific matching (covering historical administrative divisions from 1980 to 2024)  
-- Offers two matching modes (left-to-right matching / low-to-high matching)
+- Offers two matching modes (left-to-right matching / low-to-high matching), with optional matching of county short names
 - Enables batch processing of address data in Stata using the same command name [cnloc](https://github.com/maobin-xu/cnloc-stata)
 
 
@@ -49,7 +49,7 @@ Note: County-level IDs `county_id` are currently **unreliable**! The province- a
 ```python
 import cnloc
 address_data = ['江苏省昆山市千灯镇玉溪西路', '广东省深圳市南山区深南大道']
-result = cnloc.getlocation(address_data, year=2023, mode=1, drop=['adcode','id'], prefix='a_', suffix='_b')
+result = cnloc.getlocation(address_data, year=2023, mode=1, drop=['adcode','id'], prefix='a_', suffix='_b', county_short=True)
 result
 ```
 
@@ -75,6 +75,7 @@ result
     - 'id'：删除省份、城市、区县的ID列
 - `prefix`：输出列名前缀（可选）。默认空。
 - `suffix`：输出列名后缀（可选）。默认空。
+- `county_short`：是否使用区县简称匹配（可选）。默认False。
 - `max_workers`：最大线程数（可选）。默认4线程。
 
 
@@ -94,6 +95,7 @@ Args:
     - 'id': drop province_id, city_id, and county_id columns
 - `prefix`: Prefix to add to column names.
 - `suffix`: Suffix to add to column names.
+- `county_short`: Whether to use county short names for matching. Default is False.
 - `max_workers`: Maximum number of worker threads. Default is 4.
 
 
@@ -148,7 +150,7 @@ address_data = [
 
 # Parse with cnloc
 import cnloc
-cnloc.getlocation(address_data)
+cnloc.getlocation(address_data, county_short=True)
 
 # Parse with cpca
 import cpca
@@ -202,16 +204,16 @@ cpca.transform(address_data)
 数据来源：
 - 1980-2024年度行政区划代码：爬取自[中华人民共和国民政部行政区划代码](https://www.mca.gov.cn/n156/n186/index.html)，人工修正部分官方错误数据
 - 官方行政区划数目：来自[中华人民共和国国家统计局年度数据](https://data.stats.gov.cn/easyquery.htm?cn=C01)  
-  
+   
 Data Sources:
 - Administrative division codes (1980-2024): Scraped from [Ministry of Civil Affairs of the People's Republic of China (MCA)](https://www.mca.gov.cn/n156/n186/index.html), with manual corrections for partial official errors
 - Official administrative division counts: Sourced from [National Bureau of Statistics of the People's Republic of China (NBS) Annual Data](https://data.stats.gov.cn/easyquery.htm?cn=C01)
 
 
-根据[石艺峰](https://zhuanlan.zhihu.com/p/564774073)以及我自己的观察，民政部披露的逐年行政区划代码中，1982年山西、内蒙古、黑龙江、浙江、福建、江西、河南及四川省，以及1983年湖南省，其内部市级行政区划代码发生过互相调配的现象，无法确认是数据错误还是发生了一些大事（尤其是浙江），因此保留民政部原始代码。
+根据[石艺峰](https://zhuanlan.zhihu.com/p/564774073)以及我自己的观察，民政部披露的逐年行政区划代码中，1982年山西、内蒙古、黑龙江、浙江、福建、江西、河南及四川省，以及1983年湖南省，其内部市级行政区划代码发生过互相调配的现象，无法确认是数据错误还是发生了一些大事（尤其是浙江），因此保留民政部原始行政区划代码。
 
-According to [石艺峰](https://zhuanlan.zhihu.com/p/564774073) and my observation, in the annual administrative division codes disclosed by the MCA, there were cases of mutual adjustment of city-level administrative division codes within Shanxi, Nei Mongol, Heilongjiang, Zhejiang, Fujian, Jiangxi, Henan and Sichuan provinces in 1982, and Hunan province in 1983. It is hard to confirm whether this was due to data errors or the occurrence of certain major events, and I use the raw MCA codes.
-  
+According to [石艺峰](https://zhuanlan.zhihu.com/p/564774073) and my observation, in the annual administrative division codes disclosed by the MCA, there were cases of mutual adjustment of city-level administrative division codes within Shanxi, Nei Mongol, Heilongjiang, Zhejiang, Fujian, Jiangxi, Henan and Sichuan provinces in 1982, and Hunan province in 1983. It is hard to confirm whether this was due to data errors or the occurrence of certain major events, and I use the raw admistrative division codes.
+
 
 地级行政区划数目对比 Comparison of city-level administrative divisions  
 
@@ -220,7 +222,7 @@ According to [石艺峰](https://zhuanlan.zhihu.com/p/564774073) and my observat
 | Official | 318  | 316  | 322  | 322  | 322  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | 340  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
 | My       | **316**  | 316  | **319**  | **323**  | **323**  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | **334**  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
 
-1995年地级行政区划数目疑似统计局有问题。
+1995年统计局地级行政区划数目疑似有问题。
 
 There seems to be a problem with the 1995 number of city-level administrative divisions from the NBS.
 

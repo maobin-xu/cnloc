@@ -3,7 +3,7 @@ cnloc
 中国行政区划地址解析器
 Address Parser for Chinese Administrative Divisions
 """
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 import pandas as pd
 import ahocorasick
@@ -171,7 +171,7 @@ class AddressParser:
             'county_name': None, 'county_adcode': None, 'county_id': None
         }
 
-    def parse_left_to_right(self, matched_results: List[dict], year: int = DEFAULT_YEAR) -> dict:
+    def parse_left_to_right(self, matched_results: List[dict], year: int = DEFAULT_YEAR, county_short: bool = False) -> dict:
         """
         Left-to-right matching mode: match province, city, county in address order
         """
@@ -231,17 +231,23 @@ class AddressParser:
             # match province
             if not province_adcode:
                 # full-name first, then short-name
-                if select_province_adcode(adcode_map[(FULL_NAME, 'province')]) or select_province_adcode(adcode_map[(SHORT_NAME, 'province')]):
+                if select_province_adcode(adcode_map[(FULL_NAME, 'province')]):
                     continue  # skip other matching if province is matched
-            # match full-name city
+                if select_province_adcode(adcode_map[(SHORT_NAME, 'province')]):
+                    continue  # skip other matching if province is matched
+            # match city
             if not city_adcode:
                 # full-name first, then short-name
-                if select_city_adcode(adcode_map[(FULL_NAME, 'city')], year) or select_city_adcode(adcode_map[(SHORT_NAME, 'city')], year, short=True):
+                if select_city_adcode(adcode_map[(FULL_NAME, 'city')], year):
                     continue  # skip other matching if city is matched
-            # match full-name county
+                if select_city_adcode(adcode_map[(SHORT_NAME, 'city')], year, short=True):
+                    continue  # skip other matching if city is matched
+            # match county
             if not county_adcode:
                 # full-name first, then short-name
-                if select_county_adcode(adcode_map[(FULL_NAME, 'county')], year) or select_county_adcode(adcode_map[(SHORT_NAME, 'county')], year):
+                if select_county_adcode(adcode_map[(FULL_NAME, 'county')], year):
+                    continue  # skip other matching if county is matched
+                if county_short and select_county_adcode(adcode_map[(SHORT_NAME, 'county')], year):
                     continue  # skip other matching if county is matched
 
         # modify city_adcode for special city
@@ -252,7 +258,7 @@ class AddressParser:
 
         return self.get_location_from_adcode(province_adcode, city_adcode, county_adcode, year)
 
-    def parse_low_to_high(self, matched_results: List[dict], year: int = DEFAULT_YEAR) -> dict:
+    def parse_low_to_high(self, matched_results: List[dict], year: int = DEFAULT_YEAR, county_short: bool = False) -> dict:
         """
         Low-to-high matching mode: match county first, then city, then province
         """
@@ -327,7 +333,7 @@ class AddressParser:
         if not county_adcode and len(county_adcodes_full)>0:
             select_county_adcode(county_adcodes_full, year)
         # matching with short-name county
-        if not county_adcode and len(county_adcodes_short)>0:
+        if county_short and not county_adcode and len(county_adcodes_short)>0:
             select_county_adcode(county_adcodes_short, year)
         # matching with full-name city
         if not city_adcode and len(city_adcodes_full)>0:
@@ -345,7 +351,7 @@ class AddressParser:
         return self.get_location_from_adcode(province_adcode, city_adcode, county_adcode, year)
 
 
-    def parse_single(self, address: str, year: int = DEFAULT_YEAR, mode: int = LEFT_TO_RIGHT, drop: List[str] = None) -> dict:
+    def parse_single(self, address: str, year: int = DEFAULT_YEAR, mode: int = LEFT_TO_RIGHT, drop: List[str] = None, county_short: bool = False) -> dict:
         """
         Parse a single address string.
         """
@@ -386,21 +392,21 @@ class AddressParser:
 
         # parse address matches
         if mode==LEFT_TO_RIGHT:
-            final_match = self.parse_left_to_right(matched_results, year)
+            final_match = self.parse_left_to_right(matched_results, year, county_short)
         elif mode==LOW_TO_HIGH:
-            final_match = self.parse_low_to_high(matched_results, year)
+            final_match = self.parse_low_to_high(matched_results, year, county_short)
         else:
             raise ValueError(f"Unsupported matching mode: {mode}")
 
         return drop_columns(final_match, drop)
     
-    def parse_batch(self, input_data: pd.DataFrame, mode: int = LEFT_TO_RIGHT, drop: List[str] = None, prefix: str = '', suffix: str = '', max_workers: int = 4) -> pd.DataFrame:
+    def parse_batch(self, input_data: pd.DataFrame, mode: int = LEFT_TO_RIGHT, drop: List[str] = None, prefix: str = '', suffix: str = '', county_short: bool = False, max_workers: int = 4) -> pd.DataFrame:
         """
         Parse a batch of addresses with associated years using multi-threading.
         Input DataFrame must have 'address' and 'year' columns.
         """
 
-        # preparing for matching 
+        # preparing for matching
         match_year_list = input_data['year'].unique().tolist()
         self._build_automaton(match_year_list)
 
@@ -408,7 +414,7 @@ class AddressParser:
         tasks = list(zip(input_data.index, input_data['address'], input_data['year']))
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             parsed_results = list(executor.map(
-                lambda task: self.parse_single(task[1], task[2], mode=mode, drop=drop),  # task[1]=address, task[2]=year
+                lambda task: self.parse_single(task[1], task[2], mode=mode, drop=drop, county_short=county_short),  # task[1]=address, task[2]=year
                 tasks
             ))
         processed_dfs = pd.DataFrame(parsed_results, index=input_data.index)
@@ -450,6 +456,7 @@ def getlocation(input_data: Union[str, List[str], pd.Series],
                 drop: List[str] = None,
                 prefix: str = '',
                 suffix: str = '',
+                county_short: bool = False,
                 max_workers: int = 4
                 ) -> pd.DataFrame:
     """
@@ -471,6 +478,7 @@ def getlocation(input_data: Union[str, List[str], pd.Series],
             - 'id': drop province_id, city_id, and county_id columns
         prefix: Prefix to add to column names.
         suffix: Suffix to add to column names.
+        county_short: Whether to consider short names for county-level matching. Default is False.
         max_workers: Maximum number of worker threads. Default is 4.
     Returns:
         pd.DataFrame: columns with address (raw address), year (parsing year), province_name (province full name), city_name (city full name), county_name (county full name), province_adcode (province code), city_adcode (city administrative code), county_adcode(county administrative code), province_id (province ID), city_id (city ID), county_id (county ID)
@@ -479,13 +487,13 @@ def getlocation(input_data: Union[str, List[str], pd.Series],
     Examples:
         Simple example:
         >>> import cnloc
-        >>> result = cnloc.getlocation('江苏省昆山市千灯镇玉溪西路', year=2023)
+        >>> result = cnloc.getlocation('江苏省昆山市千灯镇玉溪西路')
         >>> print(result)
         
         Batch example:
         >>> import cnloc
         >>> address_data = ['江苏省昆山市千灯镇玉溪西路', '广东省深圳市南山区深南大道']
-        >>> result = cnloc.getlocation(address_data, year=2023, mode=1)
+        >>> result = cnloc.getlocation(address_data, year=2023, mode=1, county_short=True)
         >>> print(result)
     """
     # uniform input to DataFrame, handle different input types
@@ -503,11 +511,11 @@ def getlocation(input_data: Union[str, List[str], pd.Series],
     else:
         raise TypeError("Only support str, list, np.ndarray, or pd.Series as input")
     
-    return address_parser.parse_batch(df, mode=mode, drop=drop, prefix=prefix, suffix=suffix, max_workers=max_workers)
+    return address_parser.parse_batch(df, mode=mode, drop=drop, prefix=prefix, suffix=suffix, county_short=county_short, max_workers=max_workers)
 
 
 # interface function for Stata
-def parse_address_from_Stata(input_data: str, year: str, drop: str = None, mode: int = 1, prefix: str = '', suffix: str = '' , sample: str = None):
+def parse_address_from_Stata(input_data: str, year: str, drop: str = None, mode: int = 1, prefix: str = '', suffix: str = '' , sample: str = None, county_short: bool = False):
     from sfi import Data  # integrated in Stata
     # get data
     try:  # input year as int
@@ -524,7 +532,7 @@ def parse_address_from_Stata(input_data: str, year: str, drop: str = None, mode:
     drop = drop.split() if drop else None
     drop = (drop + ['address']) if drop else ['address']
     # parse address
-    final_location = getlocation(dataframe['input_data'], year=dataframe['year'], drop=drop, mode=mode, prefix=prefix, suffix=suffix)
+    final_location = getlocation(dataframe['input_data'], year=dataframe['year'], drop=drop, mode=mode, prefix=prefix, suffix=suffix, county_short=county_short)
 	# fill missing value
     for each in ["province_name","city_name","county_name","province_adcode","city_adcode","county_adcode", "province_id", "city_id", "county_id"]:
         new_name = prefix+each+suffix

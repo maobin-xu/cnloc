@@ -8,7 +8,7 @@ address_data = [
     '南山', "广东省深圳市南山区深南大道", "深圳南山", "广东南山", '深圳市华侨城东部工业区', '深圳东门南路2006号宝丰大厦五楼', "中国深圳市深南大道",  
     '海淀', "北京市海淀区中关村大街1号", "海淀中关村大街1号", '中关村大街1号',
     '马鞍山市经济技术开发区红旗南路51号', '银川市西夏区北京西路630号', '杭州市延安路508号', '江苏省昆山市千灯镇玉溪西路168号', "上海市", '' ]
-data1 = cnloc.getlocation( address_data) 
+data1 = cnloc.getlocation( address_data, county_short=True) 
 
 import cpca
 data2 = cpca.transform( address_data )
