@@ -33,6 +33,19 @@
 # data = data[data['officeaddress']!='']
 # data
 
+import sys
+sys.path.append("C:/Dropbox/CodeCenter/Python/src/cnloc/")
+import cnloc
+
+address_data = [
+    "朝阳", '朝阳市', '朝阳县', '朝阳区', '朝阳市朝阳', '朝阳朝阳', '北京朝阳', '辽宁朝阳',
+    '荆州', '荆州市', '荆州区', '荆州市荆州区', '荆州市荆州', "荆州荆州", "荆州荆州区", '湖北荆州', '湖北荆州沙市', 
+    "鼓楼区", "江苏鼓楼区","南京鼓楼区", "江苏徐州鼓楼区",
+    '南山', "广东省深圳市南山区深南大道", "深圳南山", "广东南山", '深圳市华侨城东部工业区', '深圳东门南路2006号宝丰大厦五楼', "中国深圳市深南大道",  
+    '海淀', "北京市海淀区中关村大街1号", "海淀中关村大街1号", '中关村大街1号',
+    '马鞍山市经济技术开发区红旗南路51号', '银川市西夏区北京西路630号', '杭州市延安路508号', '江苏省昆山市千灯镇玉溪西路168号', "上海市", '' 
+]
+cnloc.getlocation(address_data, drop=['adcode','id'], county_short=True)
 
 
 # cd "C:/Dropbox/CodeCenter/Python/src/cnloc/"
