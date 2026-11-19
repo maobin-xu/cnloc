@@ -4,7 +4,7 @@ cnloc
 Address Parser for Chinese Administrative Divisions
 """
 
-# V0.2.0 (2026-11-19): support county_id; add 2025 data; change data source and correct data errors
+# V0.2.0 (2026-11-20): support county_id; add 2025 data; change data source and correct data errors
 # V0.1.7 (2026-01-13)
 
 

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cnloc"
+version = "0.2.0"
+description = "Address Parser for Chinese Administrative Divisions"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Maobin Xu", email = "maobinxu@foxmail.com" }
+]
+urls = { Homepage = "https://github.com/maobin-xu/cnloc" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Natural Language :: Chinese (Simplified)",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.6"
+dependencies = [
+    "pandas",
+    "pyahocorasick",
+]
+
+[tool.setuptools.packages.find]
+include = ["cnloc*"]
+
+[tool.setuptools.package-data]
+"cnloc" = ["data/*.csv"]

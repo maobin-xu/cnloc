@@ -1,6 +1,6 @@
 # cnloc (China Location)
 
-Last updated on 2026-11-15
+Last updated on 2026-11-20
 
 `cnloc` 是一个专注于中国地址解析的Python库，核心功能如下：  
 - 解析地址文本，提取省份、城市、区县的**全称**、**行政区划代码**及 **ID** 
@@ -34,11 +34,25 @@ result
 
 | address                     | year | province_name | city_name | county_name | province_adcode | city_adcode | county_adcode | province_id | city_id | county_id |
 |-----------------------------|------|---------------|-----------|-------------|-----------------|-------------|---------------|-------------|---------|-----------|
-| 广东省深圳市南山区深南大道 | 2024 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
+| 广东省深圳市南山区深南大道 | 2025 | 广东省        | 深圳市    | 南山区      | 440000          | 440300      | 440305        | 440000      | 440300  | 440305    |
 
-其中，后缀为`_name`的列是地址的全称，后缀为`_adcode`的列是地址的行政区划代码，后缀为`_id`的列是地址的ID，地址ID追踪一个省市县的唯一标识，而不用考虑改名或改编号。
+其中，后缀为`_name`的列是地址的全称，后缀为`_adcode`的列是地址的行政区划代码，后缀为`_id`的列是地址的ID，地址ID追踪一个省市县的唯一标识，而不用考虑改名或改编号。`county_id`数目繁多且为手工核对，如发现有误请联系作者。（数据：[location_20261001.csv](cnloc/data/location_20261001.csv)）。
 
-The `name` column is the full name of the address. The `adcode` column is the administrative division code of the address. The `id` column is the unique identifier for a province, city, or county, which tracks the address level uniquely, regardless of name changes or code updates. 
+ID的设置遵循如下规则：
+- 如果区域A只是改`name`或者改`adcode`，则ID保持不变。ID的值为A的最新`adcode`，通常为6位数，若出现冲突则在末尾依次追加“X”、“Y”等，这种情况通常出现在数据早期
+- 如果区域A被相对均匀地拆分为B和C，则A、B、C各自的ID不同
+- 如果区域A适当增加或减少了新土地，但`name`或`adcode`不变，则A的ID不变
+- 若区域B被合并进区域A，但A的`name`或`adcode`不变，则A的ID相同
+- 特殊情况可能不遵循以上规则
+
+The `name` column is the full name of the address. The `adcode` column is the administrative division code of the address. The `id` column is the unique identifier for a province, city, or county, which tracks the address level uniquely, regardless of name changes or code updates. The number of `county_id` entries is large and values are only manually verified. Please contact the author if you find any error. (Data source: [location_20261001.csv](cnloc/data/location_20261001.csv)). 
+
+The rules for setting IDs are as follows:
+- If region A only changes its `name` or `adcode`, its ID remains unchanged. The ID value is the latest `adcode` of A, usually a 6-digit number. In case of conflicts, "X", "Y", etc. are appended at the end, which usually occurs in early data.
+- If region A is relatively evenly split into B and C, each of A, B, and C has a different ID.
+- If region A appropriately gains or loses new territory, but its `name` or `adcode` remains unchanged, A's ID remains unchanged.
+- If region B is merged into region A, but A's `name` or `adcode` remains unchanged, A's ID remains the same.
+- Special cases may not follow the above rules.
 
 
 一个更复杂的例子 A more complex example
@@ -96,12 +110,10 @@ Args:
 
 
 未来规划：
-- 完善县级ID数据  
-- 支持开发区、道路等经济地理相关匹配  
+- 支持开发区、道路等经济地理相关匹配 
 - 扩展乡镇、村社级地址匹配  
 
 Future plans:
-- Complete county-level ID data  
 - Support matching for development zones, roads, and other economic and geographic entities  
 - Extend to town- and village-level address matching
 
@@ -203,7 +215,7 @@ cpca.transform(address_data)
 - 官方行政区划数目：来自[中华人民共和国国家统计局年度数据](https://data.stats.gov.cn/dg/website/page.html#/pc/national/yearData)。根据《中华人民共和国行政区划简册》的数据，后续表格标粗体的统计局数据均错误。
    
 Data Sources:
-- Main: *The Administrative Divisions of the People's Republic of China*, the official official source of administrative division data.
+- Main: *The Administrative Divisions of the People's Republic of China*, the official source of administrative division data.
 - Administrative division codes (1980-2024): Scraped from [Ministry of Civil Affairs of the People's Republic of China (MCA)](https://www.mca.gov.cn/n156/n186/index.html) (no annual data now), with manual corrections for official errors. According to [石艺峰](https://zhuanlan.zhihu.com/p/564774073) and my observation, in the annual administrative division codes disclosed by the MCA, there were cases of mutual adjustment of city-level administrative division codes within Shanxi, Nei Mongol, Heilongjiang, Zhejiang, Fujian, Jiangxi, Henan and Sichuan provinces in 1982, and Hunan province in 1983. It is hard to confirm whether this was due to data errors or the occurrence of certain major events (especially Zhejiang), and I use the raw admistrative division codes.
 - Official counts of administrative division: Sourced from [National Bureau of Statistics of the People's Republic of China (NBS) Annual Data](https://data.stats.gov.cn/easyquery.htm?cn=C01). According to *The Administrative Divisions of the People's Republic of China*, the NBS statistical numbers in bold are incorrect.
 
@@ -223,7 +235,3 @@ Data Sources:
 |----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
 | Official | **2775** | **2780** | **2797** | **2785** | **2814** | **2826** | 2830 | 2826 | 2831 | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | **2859** | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 | 2845 |
 | My       | 2761 | 2772 | 2793 | 2773 | 2813 | 2825 | 2830 | 2826 | 2831 | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | 2858 | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 | 2845 |
-
-
-
-
