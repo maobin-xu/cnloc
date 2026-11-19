@@ -1,18 +1,18 @@
 # cnloc (China Location)
 
-Last updated on 2026-01-13
+Last updated on 2026-11-15
 
 `cnloc` 是一个专注于中国地址解析的Python库，核心功能如下：  
 - 解析地址文本，提取省份、城市、区县的**全称**、**行政区划代码**及 **ID** 
-- 解析原则：兼顾**全面性**与**准确性**，尽可能匹配完整地址信息，确保已有的匹配结果100%准确，模糊场景下不强行匹配   
-- 支持按指定年份匹配（覆盖1980-2024年历史行政区划）  
+- 解析原则：兼顾**全面性**与**准确性**，尽可能匹配完整地址信息，确保已有的匹配结果准确，模糊场景下不强行匹配   
+- 支持按指定年份匹配（覆盖1980-2025年历史行政区划）  
 - 提供两种匹配模式（左到右匹配/低到高匹配），可选区县简称匹配
 - 可通过Stata同名命令[cnloc](https://github.com/maobin-xu/cnloc-stata)与Stata集成，在Stata中批量处理地址数据
 
 `cnloc` is a Python package dedicated to Chinese address parsing, with core features including:  
 - Parses address text to extract **full name** (_name), **short name** (_short), **administrative division code** (adcode), and **ID** for provinces, cities, and counties  
-- Parsing principle: Balance **comprehensiveness** and **accuracy**; match as much complete address information as possible while ensuring 100% accuracy of results; no forced matching for ambiguous scenarios  
-- Supports year-specific matching (covering historical administrative divisions from 1980 to 2024)  
+- Parsing principle: Balance **comprehensiveness** and **accuracy**; match as much complete address information as possible while ensuring accuracy of results; no forced matching for ambiguous scenarios  
+- Supports year-specific matching (covering historical administrative divisions from 1980 to 2025)  
 - Offers two matching modes (left-to-right matching / low-to-high matching), with optional matching of county short names
 - Enables batch processing of address data in Stata using the same command name [cnloc](https://github.com/maobin-xu/cnloc-stata)
 
@@ -38,11 +38,7 @@ result
 
 其中，后缀为`_name`的列是地址的全称，后缀为`_adcode`的列是地址的行政区划代码，后缀为`_id`的列是地址的ID，地址ID追踪一个省市县的唯一标识，而不用考虑改名或改编号。
 
-注意：区县ID `county_id` 目前暂不可靠！省份、城市ID已完成人工核对，已与文末参考资料中的数据进行对比验证，确认无误。 
-
 The `name` column is the full name of the address. The `adcode` column is the administrative division code of the address. The `id` column is the unique identifier for a province, city, or county, which tracks the address level uniquely, regardless of name changes or code updates. 
-
-Note: County-level IDs `county_id` are currently **unreliable**! The province- and city-level IDs have undergone manual verification and cross-checking against the data in the references listed at the end, and have been confirmed as accurate.
 
 
 一个更复杂的例子 A more complex example
@@ -61,7 +57,7 @@ result
 
 参数：
 - `input_data`：输入地址（必填）。支持str、list或pd.Series。
-- `year`：匹配年份（可选）。默认加载2024年数据。有效范围为1980至2024年，超出范围的年份将被裁剪为默认值2024。
+- `year`：匹配年份（可选）。默认加载2025年数据。有效范围为1980至2025年，超出范围的年份将被裁剪为默认值2025。
     - int：对所有地址使用相同年份
     - int列表或pd.Series：对每个地址使用对应的年份
 - `mode`：匹配模式（可选）。默认模式1。
@@ -81,7 +77,7 @@ result
 
 Args:
 - `input_data`: Input addresses (required). Support str, list, or pd.Series.
-- `year`: Year for matching. Default is to load 2024 data. Valid range is from 1980 to 2024, and invalid years will be clipped to the default year 2024.
+- `year`: Year for matching. Default is to load 2024 data. Valid range is from 1980 to 2025, and invalid years will be clipped to the default year 2025.
     - int: use the same year for all addresses
     - list of int, or pd.Series: use the corresponding year for each address
 - `mode`: Matching mode. Default is 1.
@@ -202,51 +198,31 @@ cpca.transform(address_data)
 ## 数据质量 | Data Quality  
 
 数据来源：
-- 1980-2024年度行政区划代码：爬取自[中华人民共和国民政部行政区划代码](https://www.mca.gov.cn/n156/n186/index.html)，人工修正部分官方错误数据
-- 官方行政区划数目：来自[中华人民共和国国家统计局年度数据](https://data.stats.gov.cn/easyquery.htm?cn=C01)  
+- 主要：《中华人民共和国行政区划简册》，最官方的行政区划数据
+- 1980-2025年度行政区划代码：爬取自[中华人民共和国民政部行政区划代码](https://www.mca.gov.cn/n156/n186/index.html)（原分年数据已无），错误数据较多。根据[石艺峰](https://zhuanlan.zhihu.com/p/564774073)以及我自己的观察，民政部披露的逐年行政区划代码中，1982年山西、内蒙古、黑龙江、浙江、福建、江西、河南及四川省，以及1983年湖南省，其内部市级行政区划代码发生过互相调配的现象，无法确认是数据错误还是发生了一些大事（尤其是浙江），因此保留民政部原始行政区划代码。
+- 官方行政区划数目：来自[中华人民共和国国家统计局年度数据](https://data.stats.gov.cn/dg/website/page.html#/pc/national/yearData)。根据《中华人民共和国行政区划简册》的数据，后续表格标粗体的统计局数据均错误。
    
 Data Sources:
-- Administrative division codes (1980-2024): Scraped from [Ministry of Civil Affairs of the People's Republic of China (MCA)](https://www.mca.gov.cn/n156/n186/index.html), with manual corrections for partial official errors
-- Official administrative division counts: Sourced from [National Bureau of Statistics of the People's Republic of China (NBS) Annual Data](https://data.stats.gov.cn/easyquery.htm?cn=C01)
-
-
-根据[石艺峰](https://zhuanlan.zhihu.com/p/564774073)以及我自己的观察，民政部披露的逐年行政区划代码中，1982年山西、内蒙古、黑龙江、浙江、福建、江西、河南及四川省，以及1983年湖南省，其内部市级行政区划代码发生过互相调配的现象，无法确认是数据错误还是发生了一些大事（尤其是浙江），因此保留民政部原始行政区划代码。
-
-According to [石艺峰](https://zhuanlan.zhihu.com/p/564774073) and my observation, in the annual administrative division codes disclosed by the MCA, there were cases of mutual adjustment of city-level administrative division codes within Shanxi, Nei Mongol, Heilongjiang, Zhejiang, Fujian, Jiangxi, Henan and Sichuan provinces in 1982, and Hunan province in 1983. It is hard to confirm whether this was due to data errors or the occurrence of certain major events, and I use the raw admistrative division codes.
+- Main: *The Administrative Divisions of the People's Republic of China*, the official official source of administrative division data.
+- Administrative division codes (1980-2024): Scraped from [Ministry of Civil Affairs of the People's Republic of China (MCA)](https://www.mca.gov.cn/n156/n186/index.html) (no annual data now), with manual corrections for official errors. According to [石艺峰](https://zhuanlan.zhihu.com/p/564774073) and my observation, in the annual administrative division codes disclosed by the MCA, there were cases of mutual adjustment of city-level administrative division codes within Shanxi, Nei Mongol, Heilongjiang, Zhejiang, Fujian, Jiangxi, Henan and Sichuan provinces in 1982, and Hunan province in 1983. It is hard to confirm whether this was due to data errors or the occurrence of certain major events (especially Zhejiang), and I use the raw admistrative division codes.
+- Official counts of administrative division: Sourced from [National Bureau of Statistics of the People's Republic of China (NBS) Annual Data](https://data.stats.gov.cn/easyquery.htm?cn=C01). According to *The Administrative Divisions of the People's Republic of China*, the NBS statistical numbers in bold are incorrect.
 
 
 地级行政区划数目对比 Comparison of city-level administrative divisions  
 
-| Year     | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 | 1986 | 1987 | 1988 | 1989 | 1990 | 1991 | 1992 | 1993 | 1994 | 1995 | 1996 | 1997 | 1998 | 1999 | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 |
-|----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
-| Official | 318  | 316  | 322  | 322  | 322  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | 340  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
-| My       | **316**  | 316  | **319**  | **323**  | **323**  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | **334**  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 |
+| Year     | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 | 1986 | 1987 | 1988 | 1989 | 1990 | 1991 | 1992 | 1993 | 1994 | 1995 | 1996 | 1997 | 1998 | 1999 | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+|----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
+| Official | **318**  | 316  | **322**  | **322**  | **322**  | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | **340**  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 | 333 |
+| My       | 316 | 316 | 319 | 323 | 323 | 327  | 325  | 326  | 334  | 336  | 336  | 338  | 339  | 335  | 333  | 334  | 335  | 332  | 331  | 331  | 333  | 332  | 332  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 333  | 332  | 333  | 333  | 333  | 334  | 334  | 334  | 333  | 333  | 333  | 333  | 333  | 333  | 333 | 333 |
 
-1995年统计局地级行政区划数目疑似有问题。
-
-There seems to be a problem with the 1995 number of city-level administrative divisions from the NBS.
 
 
 县级行政区划数目对比 Comparison of county-level administrative divisions  
 
-| Year     | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 | 1986 | 1987 | 1988 | 1989 | 1990 | 1991 | 1992 | 1993 | 1994 | 1995 | 1996 | 1997 | 1998 | 1999 | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 |
-|----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
-| Official | 2775 | 2780 | 2797 | 2785 | 2814 | 2826 | 2830 | 2826 | 2831 | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | 2859 | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 |
-| My       | **2761** | **2772** | **2793** | **2774** | **2813** | **2825** | **2831** | 2826 | **2830** | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | **2858** | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 |
-
-
-## 参考资料 | References
-
-- [cpca](https://github.com/DQinYuan/chinese_province_city_area_mapper)
-- [Administrative-divisions-of-China](https://github.com/modood/Administrative-divisions-of-China)
-- [china_area](https://github.com/adyliu/china_area)
-- [gbt2260](https://github.com/medz/gbt2260)
-- [tjqh](https://github.com/gumblex/tjqh)
-- [AreaCity-JsSpider-StatsGov](https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov)
-- [shengshixian.com](https://github.com/ruiduobao/shengshixian.com)
-- [province-city-china](https://github.com/uiwjs/province-city-china/)
-- [中华人民共和国行政区划沿革地图集（1949~1999）， 陈潮、陈洪玲主编，中国地图出版社](https://book.douban.com/subject/1139251/)
-- [知乎：行政区划代码历史大全（民政部1980年-2024年+老国标+非官方数据）及一些历史梳理挖掘（2025.05更新）](https://zhuanlan.zhihu.com/p/564774073)
+| Year     | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 | 1986 | 1987 | 1988 | 1989 | 1990 | 1991 | 1992 | 1993 | 1994 | 1995 | 1996 | 1997 | 1998 | 1999 | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | 2006 | 2007 | 2008 | 2009 | 2010 | 2011 | 2012 | 2013 | 2014 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+|----------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
+| Official | **2775** | **2780** | **2797** | **2785** | **2814** | **2826** | 2830 | 2826 | 2831 | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | **2859** | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 | 2845 |
+| My       | 2761 | 2772 | 2793 | 2773 | 2813 | 2825 | 2830 | 2826 | 2831 | 2829 | 2833 | 2833 | 2833 | 2835 | 2845 | 2849 | 2858 | 2862 | 2863 | 2858 | 2861 | 2861 | 2860 | 2861 | 2862 | 2862 | 2860 | 2859 | 2859 | 2858 | 2856 | 2853 | 2852 | 2853 | 2854 | 2850 | 2851 | 2851 | 2851 | 2846 | 2844 | 2843 | 2843 | 2844 | 2846 | 2845 |
 
 
 
