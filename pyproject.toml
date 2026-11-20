@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cnloc"
-version = "0.2.0"
+version = "0.2.1"
 description = "Address Parser for Chinese Administrative Divisions"
 readme = "README.md"
 license = "MIT"
